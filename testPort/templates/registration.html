@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        input {
+            width: 92%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Registration</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <label for="profile_image">Profile Image:</label><br>
+            <input type="file" id="profile_image" name="profile_image" required><br><br>
+
+            <button type="button" id="register">submit</button>
+        </form>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#register').click(function () {
+            var formData = new FormData();
+            formData.append('username', $('#username').val());
+            formData.append('email', $('#email').val());
+            formData.append('password', $('#password').val());
+            formData.append('profile_image', $('#profile_image')[0].files[0]);
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/api/register/',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    toastr.success(response.message);
+                    setTimeout(function () {
+                        window.location.href = "http://127.0.0.1:8000/login/";
+                    }, 3000);
+                },
+                error: function (error) {
+                    toastr.error(error.responseJSON.message);
+                    console.error('Error registering user:', error);
+                }
+            });
+        });
+    });
+</script>
+
+</html>

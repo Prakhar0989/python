@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        input {
+            width: 92%;
+        }
+
+        #login {
+            width: 100%;
+            background: #2980b9;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <input type="button" value="Login" id="login">
+        </form>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#login').click(function () {
+            var username = $('#username').val();
+            // var email = $('#email').val();
+            var password = $('#password').val();
+            // Create a data object to send via AJAX
+            var data = {
+                username: username,
+                password: password
+            };
+            console.log(data)
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/api/login/',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    console.log(response)
+                    toastr.success(response.message);
+                    setTimeout(function () {
+                        window.location.href = "http://127.0.0.1:8000/welcome/";
+                    }, 3000);  // Adjust the delay as needed
+                },
+                error: function (error) {
+                    console.log(error)
+                    toastr.error(error.responseJSON.message);
+                    // Handle error response
+                    console.error('Error registering user:', error);
+                }
+            });
+        });
+    });
+</script>
+
+</html>
